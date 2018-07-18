@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.test.runners.finite;
+package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
 
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableIntegrationTests;
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableRiderTests;

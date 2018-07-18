@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.test.runners.finite;
+package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
 
 import com.antkorwin.junit5integrationtestutils.TransactionalTestConfig;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -17,10 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Korovin Anatoliy
  */
-@PostgresIntegrationTests
+@MySqlIntegrationTests
 @Import(TransactionalTestConfig.class)
-public class PostgresIntegrationTest {
-
+public class MySqlIntegrationTest {
 
     @Autowired
     private TransactionalTestConfig.FooRepository repository;
