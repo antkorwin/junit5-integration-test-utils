@@ -17,10 +17,10 @@ import java.lang.annotation.Target;
  *
  * @author Korovin Anatoliy
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 @EnableIntegrationTests
 @EnableRiderTests
 @EnableMySqlTestContainers
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
 public @interface MySqlIntegrationTests {
 }

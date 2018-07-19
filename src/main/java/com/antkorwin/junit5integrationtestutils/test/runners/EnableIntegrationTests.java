@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
  *
  * @author Korovin Anatoliy
  */
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public @interface EnableIntegrationTests {
 }

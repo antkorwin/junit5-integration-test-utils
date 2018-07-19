@@ -20,9 +20,9 @@ import java.lang.annotation.Target;
  *
  * @author Korovin Anatoliy
  */
-@EnableIntegrationTests
-@AutoConfigureMockMvc
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@EnableIntegrationTests
+@AutoConfigureMockMvc
 public @interface EnableRestTests {
 }

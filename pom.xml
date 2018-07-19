@@ -26,8 +26,8 @@
         <apache.commons.lang3.version>3.3.2</apache.commons.lang3.version>
 
         <junit.vintage.version>5.1.1</junit.vintage.version>
-        <junit-jupiter.version>5.1.1</junit-jupiter.version>
-        <junit-platform.version>1.1.1</junit-platform.version>
+        <junit-jupiter.version>5.2.0</junit-jupiter.version>
+        <junit-platform.version>1.2.0</junit-platform.version>
     </properties>
 
     <dependencies>
@@ -195,29 +195,56 @@
                 </executions>
             </plugin>
 
-            <!--TODO: fix javadoc and uncommented this-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>attach-javadocs</id>-->
-                        <!--<goals>-->
-                            <!--<goal>jar</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>2.21.0</version>
                 <configuration>
                     <!--<runOrder>random</runOrder>-->
                     <reportFormat>plain</reportFormat>
                 </configuration>
+
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>h2-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>!pg&amp;!mysql</groups>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pg-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>pg</groups>
+                            <!--<excludedGroups>h2, mysql</excludedGroups>-->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>mysql-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>mysql</groups>
+                            <!--<excludedGroups>pg, h2</excludedGroups>-->
+                        </configuration>
+                    </execution>
+                </executions>
+
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.platform</groupId>
@@ -242,13 +269,11 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
-                    <check />
+                    <check/>
                 </configuration>
             </plugin>
 
         </plugins>
-
-
 
 
         <resources>
@@ -264,7 +289,6 @@
             </testResource>
         </testResources>
     </build>
-
 
 
 </project>

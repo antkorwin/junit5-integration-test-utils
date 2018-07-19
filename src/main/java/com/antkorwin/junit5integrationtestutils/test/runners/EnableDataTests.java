@@ -25,10 +25,10 @@ import java.lang.annotation.Target;
  *
  * @author Korovin Anatoliy
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
 public @interface EnableDataTests {
 }

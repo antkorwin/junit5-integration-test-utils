@@ -1,6 +1,7 @@
 package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
 
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableDataTests;
+import com.antkorwin.junit5integrationtestutils.test.runners.EnableH2;
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableRiderTests;
 
 import java.lang.annotation.ElementType;
@@ -15,9 +16,10 @@ import java.lang.annotation.Target;
  *
  * @author Korovin Anatoliy
  */
-@EnableDataTests
-@EnableRiderTests
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@EnableDataTests
+@EnableRiderTests
+@EnableH2
 public @interface H2DataTests {
 }

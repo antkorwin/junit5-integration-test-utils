@@ -34,16 +34,5 @@ import java.lang.annotation.Target;
 @DBRider
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@TestPropertySource(properties = {
-        "spring.jpa.show-sql=true",
-        // tracing:
-        "spring.jpa.properties.hibernate.type=trace",
-        "spring.jpa.properties.hibernate.format_sql=true",
-        "spring.jpa.properties.hibernate.use_sql_comments=true",
-        "spring.jpa.properties.hibernate.connection.autocommit=false",
-        "logging.level.org.hibernate.type.descriptor.sql=trace",
-        // sql assert:
-        "spring.jpa.properties.hibernate.session_factory.statement_inspector=com.antkorwin.junit5integrationtestutils.sqltracker.StatementInspectorImpl"
-})
 public @interface EnableRiderTests {
 }
