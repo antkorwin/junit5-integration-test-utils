@@ -1,0 +1,250 @@
+:toc: preamble
+
+# JUnit5 - SpringBoot - Integration test utils
+
+image:https://travis-ci.com/antkorwin/junit5-integration-test-utils.svg?branch=master["Build Status", link="https://travis-ci.com/antkorwin/junit5-integration-test-utils"]
+
+## Getting started
+
+You need to add next dependencies:
+
+[source, xml]
+----
+<dependency>
+    <groupId>com.github.antkorwin</groupId>
+    <artifactId>junit5-integration-test-utils</artifactId>
+    <version>0.1</version>
+</dependency>
+----
+
+And repository:
+
+[source, xml]
+----
+<repositories>
+	<repository>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+----
+
+
+## DI-tests 
+
+If you need to write a test for entire context configuration:
+
+[source, java]
+----
+@EnableIntegrationTests
+public class DiTest {
+
+    @Autowired
+    private TestBean testBean;
+
+
+    @Test
+    public void testDI() throws Exception {
+        assertThat(testBean).isNotNull();
+        assertThat(testBean.hello()).isEqualTo("hello world");
+    }
+}
+----
+
+## Rest-API tests
+
+When you need to test a REAST API layer, use can use the `@EnableRestTests` annotation:
+
+[source, java]
+----
+@EnableRestTests
+public class ApiTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void testApi() throws Exception {
+        // Arrange
+        // Act
+        String result = mockMvc.perform(get("/api/test"))
+                               // Assert
+                               .andExpect(status().isOk())
+                               .andReturn().getResponse().getContentAsString();
+
+        assertThat(result).isEqualTo("hello world");
+    }
+}
+----
+
+## JPA tests
+
+### JPA-layer
+
+If you need to make a test only for a JPA layer, 
+without initializing entire context of application, 
+you can use a `@EnableDataTests` annotation instead of using a `@EnableIntegrationTests`.
+
+Be careful, all your services and components except spring data's(JPA repository, transaction managers, datasorces..) 
+not load within context.
+
+[source, java]
+----
+@EnableDataTests
+public class RiderDataTest {
+
+    @Autowired
+    private FooRepository repository;
+
+    @Test
+    public void testCreate() throws Exception {
+
+        assertThat(repository).isNotNull();
+    }
+}
+----
+
+### Database Rider
+
+In order to work with data sets based on the DbUnit, you can use a Database Rider library, for integration woth this 
+library you can add `` annotation in your test.
+However you also need to run one of the context configuration because this annotation not work without running JPA 
+context. 
+
+[source, java]
+----
+@EnableDataTests
+@EnableRiderTests
+public class RiderDataTest {
+
+    @Autowired
+    private FooRepository repository;
+
+    @Test
+    @Commit    
+    @DataSet(cleanBefore = true, cleanAfter = true, transactional = true)
+    @ExpectedDataSet(value = "/datasets/expected.json", ignoreCols = "ID")
+    public void testCreate() throws Exception {
+
+        repository.saveAndFlush(TransactionalTestConfig.Foo.builder()
+                                                           .field("tru la la..")
+                                                           .build());
+    }
+}
+----
+
+
+### PostgreSQL
+
+In order to test you native query on the real data base instead of in-memory H2,
+you can use a test-containers library and PostgreSQL docker container.
+
+When you add an annotation `@EnablePostgresTestContainers`, testcontainers run image for the PostgreSQL in you test.
+
+#### Data JPA
+
+You can combine annotations which you need:
+
+[source, java]
+----
+@EnableDataTests
+@EnableRiderTests
+@EnablePostgresTestContainers
+public class PostgresTcDataTest {
+
+    @Autowired
+    private FooRepository repository;
+
+    @Test
+    @Commit
+    @DataSet(cleanBefore = true, cleanAfter = true)
+    @ExpectedDataSet(value = "/datasets/expected.json", ignoreCols = "ID")
+    public void testCreate() throws Exception {
+
+        repository.saveAndFlush(Foo.builder()
+                                   .field("tru la la..")
+                                   .build());
+    }
+}
+----
+
+or use a stereotype `@PostgresDataTests` for this configuration:
+
+[source, java]
+----
+@PostgresDataTests
+public class PostgresDataTest {
+    ...
+}
+----
+
+#### Integration(entire context)
+
+In the same way you can make an integration configuration for test with postgres container:
+
+[source, java]
+----
+@EnableIntegrationTests
+@EnableRiderTests
+@EnablePostgresTestContainers
+public class PostgresTcIntegrationTest {
+    ...
+}
+----
+
+or use a stereotype for this configuration:
+
+[source, java]
+----
+@PostgresIntegrationTests
+@Import(TransactionalTestConfig.class)
+public class PostgresIntegrationTest {
+    ...
+}
+----
+
+### H2
+
+#### Data JPA
+
+[source, java]
+----
+@H2DataTests
+public class H2DataTest {
+
+}
+----
+
+#### Integration(entire context)
+
+[source, java]
+----
+@H2IntegrationTests
+public class H2DataTest {
+
+}
+----
+
+
+### MySQL
+
+#### Data JPA
+
+[source, java]
+----
+@MySqlDataTests
+public class H2DataTest {
+
+}
+----
+
+
+#### Integration(entire context)
+
+[source, java]
+----
+@MySqlIntegrationTests
+public class H2DataTest {
+
+}
+----
