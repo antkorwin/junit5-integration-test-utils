@@ -442,7 +442,7 @@ public class MvcRequester {
          */
         public MvcRequestResult expectStatus(HttpStatus status) throws Exception {
             resultActions.andDo(print());
-            resultActions.andExpect(status().isOk());
+            resultActions.andExpect(status().is(status.value()));
             return this;
         }
 

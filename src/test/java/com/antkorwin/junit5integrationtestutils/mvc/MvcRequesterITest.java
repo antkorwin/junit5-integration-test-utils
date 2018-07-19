@@ -9,10 +9,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,15 +63,25 @@ public class MvcRequesterITest {
     public void returnAsPrimitiveToInteger() throws Exception {
         // Act
         Integer result = MvcRequester.on(mockMvc)
-                                    .to("/test/integer")
-                                    .get()
-                                    // Assert
-                                    .expectStatus(HttpStatus.OK)
-                                    .returnAsPrimitive(Integer.class);
+                                     .to("/test/integer")
+                                     .get()
+                                     // Assert
+                                     .expectStatus(HttpStatus.OK)
+                                     .returnAsPrimitive(Integer.class);
 
         assertThat(result).isEqualTo(42);
     }
 
+    @Test
+    public void testCreate() throws Exception {
+        // Arrange
+        // Act
+        MvcRequester.on(mockMvc)
+                    .to("/test/create")
+                    .post()
+                    // Assert
+                    .expectStatus(HttpStatus.CREATED);
+    }
 
     @TestConfiguration
     public static class TestConfig {
@@ -97,6 +104,12 @@ public class MvcRequesterITest {
             @GetMapping("/integer")
             public int integer() {
                 return 42;
+            }
+
+            @PostMapping("/create")
+            @ResponseStatus(HttpStatus.CREATED)
+            public void create() {
+
             }
         }
     }
