@@ -126,9 +126,9 @@ public class RiderDataTest {
     @ExpectedDataSet(value = "/datasets/expected.json", ignoreCols = "ID")
     public void testCreate() throws Exception {
 
-        repository.saveAndFlush(TransactionalTestConfig.Foo.builder()
-                                                           .field("tru la la..")
-                                                           .build());
+        repository.saveAndFlush(Foo.builder()
+                                   .field("tru la la..")
+                                   .build());
     }
 }
 ----
