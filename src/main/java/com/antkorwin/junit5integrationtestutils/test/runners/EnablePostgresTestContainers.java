@@ -1,5 +1,6 @@
 package com.antkorwin.junit5integrationtestutils.test.runners;
 
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import java.lang.annotation.ElementType;
@@ -33,6 +34,7 @@ import java.lang.annotation.Target;
         // sql assert:
         "spring.jpa.properties.hibernate.session_factory.statement_inspector=com.antkorwin.junit5integrationtestutils.sqltracker.StatementInspectorImpl"
 })
+@ContextConfiguration
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface EnablePostgresTestContainers {
