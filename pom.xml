@@ -167,6 +167,19 @@
         </dependency>
         <!-- Junit 5 -->
 
+        <!-- RabbitMQ -->
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- RabbitMQ -->
 
     </dependencies>
 
