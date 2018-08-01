@@ -3,7 +3,11 @@ package com.antkorwin.junit5integrationtestutils.sqltracker;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Created by Igor Dmitriev / Mikalai Alimenkou on 12/6/15
+ * Created on 12/6/15
+ *
+ * @author Igor Dmitriev
+ * @author Mikalai Alimenkou
+ * @author Korovin Anatoliy
  */
 @Slf4j
 public class QueryCountInfoHandler implements QueryHandler {
@@ -29,7 +33,7 @@ public class QueryCountInfoHandler implements QueryHandler {
                 queryCountInfo.incrementCallCount();
                 break;
             default:
-                throw new IllegalArgumentException("There is no QueryType hander:" + queryType);
+                throw new IllegalArgumentException("There is no QueryType handler:" + queryType);
         }
     }
 
@@ -58,12 +62,16 @@ public class QueryCountInfoHandler implements QueryHandler {
                 type = QueryType.CALL;
                 break;
             default:
-                throw new AssertionError("Unknown QueryType");
+                log.warn("Unknown QueryType handle by StatementInspector: "+query);
+                type = QueryType.OTHER;
         }
         return type;
     }
 
     private String removeRedundantSymbols(String query) {
-        return query.replaceAll("--.*\n", "").replaceAll("\n", "").replaceAll("/\\*.*\\*/", "").trim();
+        return query.replaceAll("--.*\n", "")
+                    .replaceAll("\n", "")
+                    .replaceAll("/\\*.*\\*/", "")
+                    .trim();
     }
 }
