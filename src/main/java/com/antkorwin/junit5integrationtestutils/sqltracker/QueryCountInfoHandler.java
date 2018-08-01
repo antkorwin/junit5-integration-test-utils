@@ -32,6 +32,9 @@ public class QueryCountInfoHandler implements QueryHandler {
             case CALL:
                 queryCountInfo.incrementCallCount();
                 break;
+            case OTHER:
+                queryCountInfo.incrementOtherCount();
+                break;
             default:
                 throw new IllegalArgumentException("There is no QueryType handler:" + queryType);
         }
