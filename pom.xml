@@ -167,6 +167,19 @@
         </dependency>
         <!-- Junit 5 -->
 
+        <!-- RabbitMQ -->
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- RabbitMQ -->
 
     </dependencies>
 
@@ -218,7 +231,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <groups>!pg&amp;!mysql</groups>
+                            <groups>!pg&amp;!mysql&amp;!rabbitmq-test</groups>
                         </configuration>
                     </execution>
                     <execution>
@@ -240,6 +253,17 @@
                         </goals>
                         <configuration>
                             <groups>mysql</groups>
+                            <!--<excludedGroups>pg, h2</excludedGroups>-->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>rabbit-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>rabbitmq-test</groups>
                             <!--<excludedGroups>pg, h2</excludedGroups>-->
                         </configuration>
                     </execution>
