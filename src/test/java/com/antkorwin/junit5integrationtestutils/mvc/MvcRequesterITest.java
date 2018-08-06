@@ -1,5 +1,6 @@
 package com.antkorwin.junit5integrationtestutils.mvc;
 
+import com.antkorwin.junit5integrationtestutils.mvc.requester.MvcRequester;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,29 @@ public class MvcRequesterITest {
         // Act
         MvcRequester.on(mockMvc)
                     .to("/test/create")
+                    .post()
+                    // Assert
+                    .expectStatus(HttpStatus.CREATED);
+    }
+
+
+    @Test
+    public void testUrlTrim() throws Exception {
+        // Arrange
+        // Act
+        MvcRequester.on(mockMvc)
+                    .to(" /test/create ")
+                    .post()
+                    // Assert
+                    .expectStatus(HttpStatus.CREATED);
+    }
+
+    @Test
+    public void testAppendSlashInBeginOfUrl() throws Exception {
+        // Arrange
+        // Act
+        MvcRequester.on(mockMvc)
+                    .to("test/create")
                     .post()
                     // Assert
                     .expectStatus(HttpStatus.CREATED);
