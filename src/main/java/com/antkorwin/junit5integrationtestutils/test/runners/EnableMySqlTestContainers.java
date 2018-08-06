@@ -1,6 +1,9 @@
 package com.antkorwin.junit5integrationtestutils.test.runners;
 
+import com.antkorwin.junit5integrationtestutils.test.extensions.MySqlTcExtension;
+import com.antkorwin.junit5integrationtestutils.test.extensions.TraceSqlExtension;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -19,7 +22,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ContextConfiguration
-@TestPropertySource(locations = "classpath:antkorwin-mysql.properties")
+@ExtendWith(MySqlTcExtension.class)
+@ExtendWith(TraceSqlExtension.class)
 @Tag("mysql")
 public @interface EnableMySqlTestContainers {
 }

@@ -1,5 +1,6 @@
-package com.antkorwin.junit5integrationtestutils.test.abstracts;
+package com.antkorwin.junit5integrationtestutils.test.extensions;
 
+import com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation.EnableRabbitMqTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
@@ -19,11 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 /**
- * Created on 22.07.2018.
+ * Created on 07.08.2018.
  *
  * @author Korovin Anatoliy
  */
-class BaseRabbitTestTest extends BaseRabbitTest {
+@EnableRabbitMqTests
+public class RabbitMqTcExtensionTest {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -47,7 +49,7 @@ class BaseRabbitTestTest extends BaseRabbitTest {
         public static List<String> events = new ArrayList<>();
 
         @Bean
-        public RestTemplate restTemplate(){
+        public RestTemplate restTemplate() {
             return new RestTemplate();
         }
 
@@ -72,5 +74,4 @@ class BaseRabbitTestTest extends BaseRabbitTest {
             }
         }
     }
-
 }

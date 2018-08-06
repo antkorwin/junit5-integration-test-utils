@@ -1,5 +1,6 @@
 package com.antkorwin.junit5integrationtestutils.test.runners;
 
+import com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation.EnableTraceSql;
 import org.junit.jupiter.api.Tag;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -19,7 +20,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ContextConfiguration
-@TestPropertySource(locations = "classpath:antkorwin-h2.properties")
+@EnableTraceSql
 @Tag("h2")
 public @interface EnableH2 {
 }
