@@ -1,6 +1,6 @@
-package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
+package com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation;
 
-import com.antkorwin.junit5integrationtestutils.test.runners.EnableDataTests;
+import com.antkorwin.junit5integrationtestutils.test.runners.EnableIntegrationTests;
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableMySqlTestContainers;
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableRiderTests;
 
@@ -13,14 +13,14 @@ import java.lang.annotation.Target;
  * Created on 19.07.2018.
  *
  * Stereotype for the combination of:
- * DataTests, RiderTests and MySQL docker-container
+ * IntegrationTests, RiderTests and MySQL docker-container
  *
  * @author Korovin Anatoliy
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@EnableDataTests
+@EnableIntegrationTests
 @EnableRiderTests
 @EnableMySqlTestContainers
-public @interface MySqlDataTests {
+public @interface MySqlIntegrationTests {
 }

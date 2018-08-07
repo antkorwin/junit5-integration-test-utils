@@ -168,7 +168,7 @@ public class PostgresTcDataTest {
 }
 ----
 
-or use a stereotype `@PostgresDataTests` for this configuration:
+or use a meta-annotation `@PostgresDataTests` for this configuration:
 
 [source, java]
 ----
@@ -192,7 +192,7 @@ public class PostgresTcIntegrationTest {
 }
 ----
 
-or use a stereotype for this configuration:
+or use a meta-annotation for this configuration:
 
 [source, java]
 ----

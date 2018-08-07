@@ -1,6 +1,7 @@
 package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
 
 import com.antkorwin.junit5integrationtestutils.TransactionalTestConfig;
+import com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation.PostgresDataTests;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.DataSetFormat;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;

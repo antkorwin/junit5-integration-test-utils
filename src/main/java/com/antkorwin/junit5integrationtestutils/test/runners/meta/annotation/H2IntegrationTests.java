@@ -1,7 +1,7 @@
-package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
+package com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation;
 
+import com.antkorwin.junit5integrationtestutils.test.runners.EnableH2;
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableIntegrationTests;
-import com.antkorwin.junit5integrationtestutils.test.runners.EnablePostgresTestContainers;
 import com.antkorwin.junit5integrationtestutils.test.runners.EnableRiderTests;
 
 import java.lang.annotation.ElementType;
@@ -12,8 +12,7 @@ import java.lang.annotation.Target;
 /**
  * Created on 19.07.2018.
  *
- * Stereotype for the combination of: IntegrationTests, RiderTests
- * and PostgreSQL docker container.
+ * Stereotype for the combination of IntegrationTests & RiderTests
  *
  * @author Korovin Anatoliy
  */
@@ -21,6 +20,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @EnableIntegrationTests
 @EnableRiderTests
-@EnablePostgresTestContainers
-public @interface PostgresIntegrationTests {
+@EnableH2
+public @interface H2IntegrationTests {
 }
