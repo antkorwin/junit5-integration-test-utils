@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.test.runners.stereotype;
+package com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation;
 
 import com.antkorwin.junit5integrationtestutils.TransactionalTestConfig;
 import com.antkorwin.junit5integrationtestutils.test.runners.meta.annotation.MySqlIntegrationTests;
