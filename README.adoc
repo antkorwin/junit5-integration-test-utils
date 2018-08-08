@@ -13,7 +13,7 @@ You need to add next dependencies:
 <dependency>
     <groupId>com.github.antkorwin</groupId>
     <artifactId>junit5-integration-test-utils</artifactId>
-    <version>0.1</version>
+    <version>0.37</version>
 </dependency>
 ----
 
@@ -42,7 +42,6 @@ public class DiTest {
     @Autowired
     private TestBean testBean;
 
-
     @Test
     public void testDI() throws Exception {
         assertThat(testBean).isNotNull();
@@ -50,6 +49,19 @@ public class DiTest {
     }
 }
 ----
+
+same as:
+
+[source, java]
+----
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+public class DiTest {
+
+    ...
+}
+----
+
 
 ## Rest-API tests
 
@@ -74,6 +86,19 @@ public class ApiTest {
 
         assertThat(result).isEqualTo("hello world");
     }
+}
+----
+
+same as
+
+[source, java]
+----
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
+public class ApiTest {
+
+    ...
 }
 ----
 
@@ -104,6 +129,21 @@ public class RiderDataTest {
 }
 ----
 
+the same as:
+
+[source, java]
+----
+@DataJpaTest
+@ExtendWith(SpringExtension.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class RiderDataTest {
+
+    ...
+}
+----
+
+
+
 ### Database Rider
 
 In order to work with data sets based on the DbUnit, you can use a Database Rider library, for integration woth this 
@@ -132,6 +172,22 @@ public class RiderDataTest {
     }
 }
 ----
+
+the same as:
+
+[source, java]
+----
+@DBRider
+@DataJpaTest
+@ExtendWith(SpringExtension.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class RiderDataTest {
+
+    ...
+}
+----
+
+
 
 
 ### PostgreSQL
@@ -197,7 +253,6 @@ or use a meta-annotation for this configuration:
 [source, java]
 ----
 @PostgresIntegrationTests
-@Import(TransactionalTestConfig.class)
 public class PostgresIntegrationTest {
     ...
 }
