@@ -17,7 +17,7 @@ class ConcurrentTestRunnerTest {
     private static final int ITERATIONS = 100000;
 
     @Test
-    @DisabledIfEnvironmentVariable(named = "CI", matches = "travis")
+    @DisabledIfEnvironmentVariable(named = "TRAVIS", matches = "true")
     void testConcurrentFailWithoutSync() {
         // Arrange
         NonAtomicInt value = new NonAtomicInt(0);
