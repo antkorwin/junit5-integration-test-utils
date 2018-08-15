@@ -124,6 +124,12 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet-api.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.antkorwin</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>0.72</version>
+            <scope>test</scope>
+        </dependency>
         <!-- required for MvcRequester -->
 
 
