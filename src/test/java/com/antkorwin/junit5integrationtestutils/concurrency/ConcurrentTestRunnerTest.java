@@ -3,6 +3,7 @@ package com.antkorwin.junit5integrationtestutils.concurrency;
 import com.antkorwin.commonutils.concurrent.NonAtomicInt;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,6 +17,7 @@ class ConcurrentTestRunnerTest {
     private static final int ITERATIONS = 100000;
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "travis")
     void testConcurrentFailWithoutSync() {
         // Arrange
         NonAtomicInt value = new NonAtomicInt(0);
