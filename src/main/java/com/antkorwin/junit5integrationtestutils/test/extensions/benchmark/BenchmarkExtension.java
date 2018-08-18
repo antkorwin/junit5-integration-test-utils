@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.antkorwin.junit5integrationtestutils.test.extensions.benchmark.ProfilerExtension.NAMESPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -35,10 +34,9 @@ public class BenchmarkExtension implements AfterAllCallback, BeforeAllCallback {
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
 
-        ExtensionContext.Store store = context.getStore(NAMESPACE);
         long expectedResult = getExpectedFasterResult(context);
 
-        ProfilerExtension.getProfilerResult(store).forEach((method, timing) -> {
+        ProfilerExtension.getProfilerResult(context).forEach((method, timing) -> {
             if (timing.getDuration() < expectedResult) {
                 String fastestName = getExpectedFasterMethodName(context);
                 Assertions.fail("Test method [" + fastestName + "] - is not fastest in this test suite");
@@ -54,12 +52,12 @@ public class BenchmarkExtension implements AfterAllCallback, BeforeAllCallback {
         assertThat(annotationExist).as("not found EnableTestBenchmark annotation")
                                    .isTrue();
 
-        assertThat(getFasterMethodsExist(context)).as("Test method [%s] is not found in this test suite.\n",
-                                                      getExpectedFasterMethodName(context))
-                                                  .isTrue();
+        assertThat(isFasterMethodsExist(context)).as("Test method [%s] is not found in this test suite.\n",
+                                                     getExpectedFasterMethodName(context))
+                                                 .isTrue();
     }
 
-    private boolean getFasterMethodsExist(ExtensionContext context) {
+    private boolean isFasterMethodsExist(ExtensionContext context) {
 
         String fastestTestName = getExpectedFasterMethodName(context);
 
@@ -74,7 +72,7 @@ public class BenchmarkExtension implements AfterAllCallback, BeforeAllCallback {
 
     private long getExpectedFasterResult(ExtensionContext context) {
 
-        return Optional.ofNullable(ProfilerExtension.getProfilerResult(context.getStore(NAMESPACE)))
+        return Optional.ofNullable(ProfilerExtension.getProfilerResult(context))
                        .map(r -> r.get(getExpectedFasterMethodName(context)))
                        .map(ProfilerExtension.TestTiming::getDuration)
                        .orElseThrow(() -> getNotFoundError(context));

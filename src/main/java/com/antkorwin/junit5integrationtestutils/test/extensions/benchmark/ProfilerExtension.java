@@ -22,29 +22,53 @@ import java.util.Map;
  */
 public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
+    /**
+     * Namespace for the storage of test results
+     */
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
             .create("com", "antkorwin", "profiler");
 
-    public static final String PROFILER_RESULTS_VAR_NAME = "profilerResultsMap";
-
-    public static Map<String, TestTiming> getProfilerResult(ExtensionContext.Store store) {
-        return (Map<String, TestTiming>) store.get(PROFILER_RESULTS_VAR_NAME);
+    /**
+     * return a result of profiling
+     * for a current test class in the context
+     */
+    public static Map<String, TestTiming> getProfilerResult(ExtensionContext context) {
+        return getProfilerResult(context, context.getRequiredTestClass().getName());
     }
 
-    public static TestTiming getTestTiming(ExtensionContext.Store store, String testMethodName) {
-        return getProfilerResult(store).get(testMethodName);
+    /**
+     * return a result of profiling
+     * for the testClassName
+     */
+    public static Map<String, TestTiming> getProfilerResult(ExtensionContext context, String testClassName) {
+        ExtensionContext.Store store = context.getRoot().getStore(NAMESPACE);
+        return (Map<String, TestTiming>) store.get(testClassName);
+    }
+
+    /**
+     * return a timing of the profiling result (by method name)
+     * for current test class in the context.
+     */
+    public static TestTiming getTestTiming(ExtensionContext context, String testMethodName) {
+        return getProfilerResult(context).get(testMethodName);
+    }
+
+    /**
+     * return a timing of the profiling result
+     * by test class name
+     * and test method name from this class.
+     */
+    public static TestTiming getTestTiming(ExtensionContext context, String testClassName, String testMethodName) {
+        return getProfilerResult(context, testClassName).get(testMethodName);
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
 
+        Map<String, TestTiming> map = getOrCreateProfilerResults(context);
+
         String testMethodName = context.getRequiredTestMethod().getName();
-        ExtensionContext.Store store = getParentStore(context);
-
-        Map<String, TestTiming> map = getOrCreateProfilerResults(store);
-
-        map.put(testMethodName,
-                new TestTiming(System.currentTimeMillis()));
+        map.put(testMethodName, new TestTiming(System.currentTimeMillis()));
     }
 
     @Override
@@ -52,19 +76,27 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
 
         long endTime = System.currentTimeMillis();
 
-        ExtensionContext.Store store = getParentStore(context);
         String testMethodName = context.getRequiredTestMethod().getName();
-
-        TestTiming testTiming = getTestTiming(store, testMethodName);
+        TestTiming testTiming = getTestTiming(context, testMethodName);
         testTiming.setDuration(endTime - testTiming.getStartTime());
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
 
-        ExtensionContext.Store store = context.getStore(NAMESPACE);
-        Map<String, TestTiming> results = getProfilerResult(store);
+        Map<String, TestTiming> results = getProfilerResult(context);
         printProfilerResult(results);
+    }
+
+    private Map<String, TestTiming> getOrCreateProfilerResults(ExtensionContext context) {
+        ExtensionContext.Store store = getStore(context);
+        return (Map<String, TestTiming>) store.getOrComputeIfAbsent(context.getRequiredTestClass().getName(),
+                                                                    k -> new HashMap());
+    }
+
+    @NotNull
+    private ExtensionContext.Store getStore(ExtensionContext context) {
+        return context.getRoot().getStore(NAMESPACE);
     }
 
     private void printProfilerResult(Map<String, TestTiming> results) {
@@ -74,18 +106,6 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
                                                                  method,
                                                                  timing.duration)));
         System.out.println();
-    }
-
-    private Map<String, TestTiming> getOrCreateProfilerResults(ExtensionContext.Store store) {
-        return (Map<String, TestTiming>) store.getOrComputeIfAbsent(PROFILER_RESULTS_VAR_NAME,
-                                                                    k -> new HashMap());
-    }
-
-    @NotNull
-    private ExtensionContext.Store getParentStore(ExtensionContext context) {
-        return context.getParent()
-                      .map(c -> c.getStore(NAMESPACE))
-                      .orElseThrow(() -> new RuntimeException("wrong test context hierarchy for benchmark test"));
     }
 
     @Getter
