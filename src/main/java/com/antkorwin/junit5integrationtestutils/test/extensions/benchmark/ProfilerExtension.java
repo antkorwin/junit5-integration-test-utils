@@ -110,7 +110,7 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
 
     @Getter
     @Setter
-    class TestTiming {
+    public class TestTiming {
         private long startTime;
         private long duration;
 
