@@ -62,6 +62,18 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
         return getProfilerResult(context, testClassName).get(testMethodName);
     }
 
+    /**
+     * print profiling results in the console
+     */
+    public static void printProfilerResult(Map<String, TestTiming> results) {
+        System.out.println("\nResult of profiling: ");
+        results.forEach((method, timing) ->
+                                System.out.println(String.format("-> %s : %d ms.",
+                                                                 method,
+                                                                 timing.getDuration())));
+        System.out.println();
+    }
+
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
 
@@ -97,25 +109,5 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     @NotNull
     private ExtensionContext.Store getStore(ExtensionContext context) {
         return context.getRoot().getStore(NAMESPACE);
-    }
-
-    private void printProfilerResult(Map<String, TestTiming> results) {
-        System.out.println("\nResult of profiling: ");
-        results.forEach((method, timing) ->
-                                System.out.println(String.format("-> %s : %d ms.",
-                                                                 method,
-                                                                 timing.duration)));
-        System.out.println();
-    }
-
-    @Getter
-    @Setter
-    public class TestTiming {
-        private long startTime;
-        private long duration;
-
-        public TestTiming(long startTime) {
-            this.startTime = startTime;
-        }
     }
 }

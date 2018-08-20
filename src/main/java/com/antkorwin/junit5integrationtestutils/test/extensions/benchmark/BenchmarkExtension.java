@@ -1,92 +1,110 @@
 package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created on 18.08.2018.
- * <p>
- * Runs a test suite and asserts that the execution time
- * of each test does not better than the time of the fastest method
- * which set by the {@link EnableTestBenchmark} annotation
+ * Created on 19.08.2018.
+ *
+ * Extension for make a decision which test-method a fastest in test suite.
  *
  * @author Korovin Anatoliy
  */
-public class BenchmarkExtension implements AfterAllCallback, BeforeAllCallback {
+public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
 
-
-    private static final String WRONG_CONFIGURATION_MESSAGE = "wrong configuration of the Benchmark class";
-
-    @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
-        validateTestSuite(context);
-    }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
 
-        long expectedResult = getExpectedFasterResult(context);
+        // evaluate averages:
+        Map<String, List<Long>> iterationResults = getResultOfEachIteration(context);
+        iterationResults.forEach((method, result) -> {
 
+            double average = result.stream()
+                                   .mapToLong(l -> l)
+                                   .average()
+                                   .orElseThrow(() -> new AssertionError("not foud data for test iterations"));
+
+            TestTiming timing = ProfilerExtension.getProfilerResult(context)
+                                                 .get(method);
+            timing.setAverage(average);
+            timing.setDuration((long) average);
+
+            System.out.println("\n Average: " + average + "\n");
+        });
+
+        // check fastest result:
+        long expectedResult = getExpectedFasterResult(context);
         ProfilerExtension.getProfilerResult(context).forEach((method, timing) -> {
             if (timing.getDuration() < expectedResult) {
                 String fastestName = getExpectedFasterMethodName(context);
-                Assertions.fail("Test method [" + fastestName + "] - is not fastest in this test suite");
+                Assertions.fail("\n\nThe test method \"" + fastestName + "\" - is not fastest in this test suite.\n" +
+                                "Timing of the method \"" + method + "\" (" + timing.getDuration() + " ms.) " +
+                                " less than timing (" + expectedResult + " ms.) of the expected method \"" + fastestName + "\".\n");
             }
         });
     }
 
-    private void validateTestSuite(ExtensionContext context) {
-        Boolean annotationExist = context.getElement()
-                                         .map(e -> e.isAnnotationPresent(EnableTestBenchmark.class))
-                                         .orElseThrow(() -> new AssertionError(WRONG_CONFIGURATION_MESSAGE));
 
-        assertThat(annotationExist).as("not found EnableTestBenchmark annotation")
-                                   .isTrue();
-
-        assertThat(isFasterMethodsExist(context)).as("Test method [%s] is not found in this test suite.\n",
-                                                     getExpectedFasterMethodName(context))
-                                                 .isTrue();
-    }
-
-    private boolean isFasterMethodsExist(ExtensionContext context) {
-
-        String fastestTestName = getExpectedFasterMethodName(context);
+    @Override
+    public void beforeAll(ExtensionContext context) throws Exception {
 
         Method[] methods = context.getTestClass()
                                   .map(Class::getDeclaredMethods)
                                   .orElseThrow(() -> new AssertionError("not found methods for test"));
 
-        return Arrays.stream(methods)
-                     .filter(m -> m.getName().equals(fastestTestName))
-                     .anyMatch(m -> m.isAnnotationPresent(Test.class));
+        long count = Arrays.stream(methods)
+                           .filter(m -> m.isAnnotationPresent(Fast.class))
+                           .count();
+        assertThat(count)
+                .as("Expected one method with the annotation Fast")
+                .isEqualTo(1);
     }
+
 
     private long getExpectedFasterResult(ExtensionContext context) {
 
         return Optional.ofNullable(ProfilerExtension.getProfilerResult(context))
                        .map(r -> r.get(getExpectedFasterMethodName(context)))
-                       .map(ProfilerExtension.TestTiming::getDuration)
+                       .map(TestTiming::getDuration)
                        .orElseThrow(() -> getNotFoundError(context));
     }
 
     private String getExpectedFasterMethodName(ExtensionContext context) {
-        return context.getElement()
-                      .map(e -> e.getAnnotation(EnableTestBenchmark.class))
-                      .map(EnableTestBenchmark::fastest)
-                      .orElseThrow(() -> new AssertionError(WRONG_CONFIGURATION_MESSAGE));
+
+        Method[] methods = context.getTestClass()
+                                  .map(Class::getDeclaredMethods)
+                                  .orElseThrow(() -> new AssertionError("not found methods for test"));
+
+        Method method = Arrays.stream(methods)
+                              .filter(m -> m.isAnnotationPresent(Fast.class))
+                              .findFirst()
+                              .orElseThrow(() -> new AssertionError(
+                                      "Fast method not found, please annotate expected fastest method by annotation Fast"));
+
+        return method.getName();
     }
 
     private AssertionError getNotFoundError(ExtensionContext context) {
         return new AssertionError("Not found a result for the expected method: " +
                                   getExpectedFasterMethodName(context));
     }
+
+    private Map<String, List<Long>> getResultOfEachIteration(ExtensionContext context) {
+        return (Map<String, List<Long>>) context.getRoot()
+                                                .getStore(ProfilerExtension.NAMESPACE)
+                                                .get(context.getRequiredTestClass()
+                                                            .getName() + "_iterations");
+    }
+
 }

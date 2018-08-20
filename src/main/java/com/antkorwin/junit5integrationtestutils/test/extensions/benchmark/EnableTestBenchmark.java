@@ -16,14 +16,9 @@ import java.lang.annotation.Target;
  *
  * @author Korovin Anatoliy
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-// WARNING: the sequence of next extensions is important
-@ExtendWith({ProfilerExtension.class, BenchmarkExtension.class})
+@ExtendWith(BenchmarkExtension.class)
 public @interface EnableTestBenchmark {
 
-    /**
-     * name of the most fastest test method in the test class
-     */
-    String fastest();
 }

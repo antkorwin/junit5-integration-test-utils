@@ -13,11 +13,6 @@ class ProfilerExtensionTest {
 
     @Test
     void first() throws InterruptedException {
-        Thread.sleep(100);
-    }
-
-    @Test
-    void second() {
-
+        Thread.sleep(10);
     }
 }
