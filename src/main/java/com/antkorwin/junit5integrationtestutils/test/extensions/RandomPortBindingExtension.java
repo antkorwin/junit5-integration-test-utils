@@ -9,6 +9,8 @@ import org.springframework.util.SocketUtils;
 /**
  * Created on 29.08.2018.
  *
+ * Bind a random available TCP port to the server.port property
+ *
  * @author Korovin Anatoliy
  */
 public class RandomPortBindingExtension implements Extension, BeforeAllCallback {

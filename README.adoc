@@ -304,3 +304,85 @@ public class H2DataTest {
 }
 ----
 
+
+## Run multiple embedded web servers in one test suite ##
+
+If you need to run multiple embedded web servers in one test suite,
+for example to run different controllers in @TestConfiguration classes.
+
+Let's consider an example of testing pair feign in one test suite.
+
+First test:
+
+[source, java]
+----
+@EnableTestsWithEmbeddedWebServer
+public class ATest {
+
+    @Autowired
+    private AFeign aFeign;
+
+    @Test
+    void testA() {
+        // Arrange
+        // Act
+        String test = aFeign.test();
+        // Assert
+        assertThat(test).isEqualTo("A");
+    }
+
+    @TestConfiguration
+    public static class TestConfig {
+
+        @RestController
+        @RequestMapping("test")
+        public class A implements AFeign {
+
+            @Override
+            public String test() {
+                return "A";
+            }
+        }
+    }
+}
+----
+
+Second test:
+
+[source, java]
+----
+@EnableTestsWithEmbeddedWebServer
+public class BTest {
+
+    @Autowired
+    private BFeign bFeign;
+
+    @Test
+    void testB() {
+        // Arrange
+        // Act
+        String test = bFeign.test();
+        // Assert
+        assertThat(test).isEqualTo("B");
+    }
+
+    @TestConfiguration
+    public static class TestConfig {
+
+        @RestController
+        @RequestMapping("test")
+        public class B implements BFeign {
+
+            @Override
+            public String test() {
+                return "B";
+            }
+        }
+    }
+}
+----
+
+The `EnableTestsWithEmbeddedWebServer` annotation provide you an ability
+to run these tests in one test suite without conflicts about `The port may already be in use`.
+
+Each of these tests will run on a different available port.

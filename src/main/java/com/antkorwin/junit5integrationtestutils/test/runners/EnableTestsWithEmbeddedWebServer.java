@@ -14,6 +14,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Created on 29.08.2018.
  *
+ * Change the server.port property to available TCP port,
+ * than start web environment for this port
+ *
  * @author Korovin Anatoliy
  */
 @Retention(RetentionPolicy.RUNTIME)
