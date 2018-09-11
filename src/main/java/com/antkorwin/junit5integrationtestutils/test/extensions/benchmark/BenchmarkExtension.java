@@ -1,15 +1,16 @@
 package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Korovin Anatoliy
  */
+@Slf4j
 public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
 
 
@@ -27,24 +29,23 @@ public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
     public void afterAll(ExtensionContext context) throws Exception {
 
         // evaluate averages:
-        Map<String, List<Long>> iterationResults = getResultOfEachIteration(context);
+        Map<String, List<Double>> iterationResults = getResultOfEachIteration(context);
         iterationResults.forEach((method, result) -> {
 
             double average = result.stream()
-                                   .mapToLong(l -> l)
+                                   .mapToDouble(d -> d)
                                    .average()
-                                   .orElseThrow(() -> new AssertionError("not foud data for test iterations"));
+                                   .orElseThrow(() -> new AssertionError("Not found data for test iterations"));
 
             TestTiming timing = ProfilerExtension.getProfilerResult(context)
                                                  .get(method);
             timing.setAverage(average);
-            timing.setDuration((long) average);
-
-            System.out.println("\n Average: " + average + "\n");
+            timing.setDuration(average);
+            printAverage(method, timing);
         });
 
         // check fastest result:
-        long expectedResult = getExpectedFasterResult(context);
+        double expectedResult = getExpectedFasterResult(context);
         ProfilerExtension.getProfilerResult(context).forEach((method, timing) -> {
             if (timing.getDuration() < expectedResult) {
                 String fastestName = getExpectedFasterMethodName(context);
@@ -61,18 +62,18 @@ public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
 
         Method[] methods = context.getTestClass()
                                   .map(Class::getDeclaredMethods)
-                                  .orElseThrow(() -> new AssertionError("not found methods for test"));
+                                  .orElseThrow(() -> new AssertionError("Not found any methods for test"));
 
         long count = Arrays.stream(methods)
                            .filter(m -> m.isAnnotationPresent(Fast.class))
                            .count();
         assertThat(count)
-                .as("Expected one method with the annotation Fast")
+                .as("Expected one method with the annotation @Fast")
                 .isEqualTo(1);
     }
 
 
-    private long getExpectedFasterResult(ExtensionContext context) {
+    private double getExpectedFasterResult(ExtensionContext context) {
 
         return Optional.ofNullable(ProfilerExtension.getProfilerResult(context))
                        .map(r -> r.get(getExpectedFasterMethodName(context)))
@@ -80,11 +81,18 @@ public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
                        .orElseThrow(() -> getNotFoundError(context));
     }
 
+    private void printAverage(String method, TestTiming timing) {
+        log.info("The average time of [{}] = {} ms.", method, timing.getAverage());
+        if (timing.getAverage() < 1) {
+            log.warn("The average time of [{}] is less than one millisecond, your benchmark may be incorrect.", method);
+        }
+    }
+
     private String getExpectedFasterMethodName(ExtensionContext context) {
 
         Method[] methods = context.getTestClass()
                                   .map(Class::getDeclaredMethods)
-                                  .orElseThrow(() -> new AssertionError("not found methods for test"));
+                                  .orElseThrow(() -> new AssertionError("Not found methods for test"));
 
         Method method = Arrays.stream(methods)
                               .filter(m -> m.isAnnotationPresent(Fast.class))
@@ -100,11 +108,21 @@ public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
                                   getExpectedFasterMethodName(context));
     }
 
-    private Map<String, List<Long>> getResultOfEachIteration(ExtensionContext context) {
-        return (Map<String, List<Long>>) context.getRoot()
-                                                .getStore(ProfilerExtension.NAMESPACE)
-                                                .get(context.getRequiredTestClass()
-                                                            .getName() + "_iterations");
+    @SuppressWarnings("unchecked")
+    private Map<String, List<Double>> getResultOfEachIteration(ExtensionContext context) {
+        Map<String, List<Double>> result = (Map<String, List<Double>>) context.getRoot()
+                                                                              .getStore(ProfilerExtension.NAMESPACE)
+                                                                              .get(context.getRequiredTestClass()
+                                                                                          .getName() + "_iterations");
+
+        if (result == null || result.isEmpty()) {
+            Assertions.fail("Not found a benchmark results after execution of test [" +
+                            context.getRequiredTestClass() + "] \nit may happened because:" +
+                            "\n - the test class didn't use a @TestBenchmark annotation" +
+                            "\n - @TestBenchmark used with an iteration setting is less than one");
+        }
+
+        return result;
     }
 
 }

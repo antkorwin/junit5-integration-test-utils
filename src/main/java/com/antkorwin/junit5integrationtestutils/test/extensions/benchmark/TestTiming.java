@@ -19,7 +19,7 @@ import java.util.OptionalDouble;
 public class TestTiming {
 
     private long startTime;
-    private long duration;
+    private double duration;
     private double average;
     private List<Long> results = new ArrayList<>();
 

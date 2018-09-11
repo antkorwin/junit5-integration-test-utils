@@ -68,7 +68,7 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     public static void printProfilerResult(Map<String, TestTiming> results) {
         System.out.println("\nResult of profiling: ");
         results.forEach((method, timing) ->
-                                System.out.println(String.format("-> %s : %d ms.",
+                                System.out.println(String.format("-> %s : %f ms.",
                                                                  method,
                                                                  timing.getDuration())));
         System.out.println();

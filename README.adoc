@@ -386,3 +386,6 @@ The `EnableTestsWithEmbeddedWebServer` annotation provide you an ability
 to run these tests in one test suite without conflicts about `The port may already be in use`.
 
 Each of these tests will run on a different available port.
+
+You can look at the example of usage multiple embedded web servers here link:https://github
+.com/antkorwin/junit5-integration-test-utils-examples[junit5-integration-test-utils-examples]

@@ -1,8 +1,14 @@
 package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 
-import org.junit.jupiter.api.extension.*;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.extension.Extension;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -25,7 +31,7 @@ public class BenchmarkTestTemplateProvider implements TestTemplateInvocationCont
         boolean annotationPresent = context.getRequiredTestMethod().isAnnotationPresent(TestBenchmark.class);
 
         assertThat(annotationPresent)
-                .as("not found TestBenchmark annotation for this test method.")
+                .as("Not found TestBenchmark annotation for this test method.")
                 .isTrue();
 
         return annotationPresent;
@@ -40,14 +46,22 @@ public class BenchmarkTestTemplateProvider implements TestTemplateInvocationCont
 
         IntStream.range(0, annotation.warmupIterations())
                  .boxed()
-                 .forEach(i -> invocations.add(invocationContext("warmup")));
+                 .forEach(i -> invocations.add(invocationContext(WARMUP_TEST_NAME)));
 
         IntStream.range(0, annotation.measurementIterations())
                  .boxed()
-                 .forEach(i -> invocations.add(invocationContext("_" +
-                                                                 context.getRequiredTestMethod().getName())));
+                 .forEach(i -> invocations.add(invocationContext(getProcessedIterationName(context))));
 
         return invocations.stream();
+    }
+
+
+
+    public static final String WARMUP_TEST_NAME = "🔥warmup";
+
+    @NotNull
+    private String getProcessedIterationName(ExtensionContext context) {
+        return "🔍" + context.getRequiredTestMethod().getName();
     }
 
 
@@ -65,29 +79,7 @@ public class BenchmarkTestTemplateProvider implements TestTemplateInvocationCont
             public List<Extension> getAdditionalExtensions() {
 
                 return Arrays.asList(
-
-                        (AfterEachCallback) context -> {
-
-                            if (context.getDisplayName().equals("warmup")) return;
-
-                            TestTiming timing =
-                                    ProfilerExtension.getTestTiming(context,
-                                                                    context.getRequiredTestMethod().getName());
-
-                            Map<String, List<Long>> results =
-                                    (Map<String, List<Long>>) context.getRoot()
-                                                                     .getStore(ProfilerExtension.NAMESPACE)
-                                                                     .getOrComputeIfAbsent(
-                                                                             context.getRequiredTestClass()
-                                                                                    .getName() + "_iterations",
-                                                                             name -> new HashMap<String, List<Long>>());
-
-                            List<Long> longs = results.computeIfAbsent(context.getRequiredTestMethod().getName(),
-                                                                       k -> new ArrayList<>());
-
-                            longs.add(timing.getDuration());
-                        },
-
+                        new WarmUpAndAverageResultProcessorExtension(),
                         new ProfilerExtension());
             }
         };

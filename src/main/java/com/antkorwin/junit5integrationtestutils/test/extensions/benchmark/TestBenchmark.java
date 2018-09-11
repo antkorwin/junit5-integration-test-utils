@@ -32,5 +32,5 @@ public @interface TestBenchmark {
      * the number of warm-up iterations,
      * which runs before starts a sequence of measurements.
      */
-    int warmupIterations();
+    int warmupIterations() default 0;
 }
