@@ -50,7 +50,7 @@ class ConcurrentTestRunnerTest {
                                     assertThat(value.getValue()).isEqualTo(expected);
                                 });
         });
-
+        // Assert
         assertThat(value.getValue()).isNotEqualTo(ITERATIONS);
         error.printStackTrace();
     }
@@ -72,14 +72,12 @@ class ConcurrentTestRunnerTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("only to debug")
     void thr() {
         ConcurrentTestRunner.test()
                             .mode(ExecutionMode.TASK_EXECUTOR_MODE)
                             .threads(THREADS)
                             .iterations(ITERATIONS)
-                            .run(() -> {
-                                System.out.println(Thread.currentThread().getName());
-                            });
+                            .run(() -> System.out.println(Thread.currentThread().getName()));
     }
 }

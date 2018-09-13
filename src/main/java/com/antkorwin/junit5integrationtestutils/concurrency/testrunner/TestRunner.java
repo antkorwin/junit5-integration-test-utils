@@ -1,8 +1,10 @@
-package com.antkorwin.junit5integrationtestutils.concurrency;
+package com.antkorwin.junit5integrationtestutils.concurrency.testrunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.antkorwin.junit5integrationtestutils.concurrency.CallableVoid;
 
 /**
  * Created on 13.09.2018.

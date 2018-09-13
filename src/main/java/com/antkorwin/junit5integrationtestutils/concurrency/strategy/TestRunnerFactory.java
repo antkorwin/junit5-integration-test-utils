@@ -1,4 +1,7 @@
-package com.antkorwin.junit5integrationtestutils.concurrency;
+package com.antkorwin.junit5integrationtestutils.concurrency.strategy;
+
+import com.antkorwin.junit5integrationtestutils.concurrency.ExecutionMode;
+import com.antkorwin.junit5integrationtestutils.concurrency.testrunner.TestRunner;
 
 /**
  * Created on 13.09.2018.

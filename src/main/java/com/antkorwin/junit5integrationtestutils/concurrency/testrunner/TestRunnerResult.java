@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.concurrency;
+package com.antkorwin.junit5integrationtestutils.concurrency.testrunner;
 
 import java.util.List;
 

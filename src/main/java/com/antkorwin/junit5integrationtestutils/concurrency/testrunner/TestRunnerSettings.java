@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.concurrency;
+package com.antkorwin.junit5integrationtestutils.concurrency.testrunner;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-class TestRunnerSettings {
+public class TestRunnerSettings {
     /**
      * count of iterations to run test-case
      */

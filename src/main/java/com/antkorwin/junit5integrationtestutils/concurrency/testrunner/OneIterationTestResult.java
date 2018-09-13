@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.concurrency;
+package com.antkorwin.junit5integrationtestutils.concurrency.testrunner;
 
 /**
  * Created on 13.09.2018.

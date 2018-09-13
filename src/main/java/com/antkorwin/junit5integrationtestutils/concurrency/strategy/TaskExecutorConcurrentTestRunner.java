@@ -1,4 +1,4 @@
-package com.antkorwin.junit5integrationtestutils.concurrency;
+package com.antkorwin.junit5integrationtestutils.concurrency.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.antkorwin.junit5integrationtestutils.concurrency.CallableVoid;
+import com.antkorwin.junit5integrationtestutils.concurrency.testrunner.OneIterationTestResult;
+import com.antkorwin.junit5integrationtestutils.concurrency.testrunner.TestRunner;
+import com.antkorwin.junit5integrationtestutils.concurrency.testrunner.TestRunnerResult;
+import com.antkorwin.junit5integrationtestutils.concurrency.testrunner.TestRunnerSettings;
 import org.awaitility.Awaitility;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
