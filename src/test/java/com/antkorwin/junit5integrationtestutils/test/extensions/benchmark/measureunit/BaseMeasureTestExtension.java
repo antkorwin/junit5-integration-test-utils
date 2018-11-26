@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created on 26.11.2018.
  *
- * TODO: replace on javadoc
+ * abstract base Extension to write a test of MeasureUnit
  *
  * @author Korovin Anatoliy
  */
@@ -26,29 +26,43 @@ public abstract class BaseMeasureTestExtension implements AfterAllCallback, Befo
         before = getCurrentTime();
     }
 
+    /**
+     * At first:
+     * check that ProfilerExtension store in the context a timing
+     * with a duration which far from getTimeout no more than getExpectedThreshold.
+     *
+     * Second:
+     * evaluate time of the test execution and check that this time is far from
+     * the measured by profiler no more than getExpectedThreshold.
+     */
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-
+        // check the range of a duration which measured by profiler:
         TestTiming timing = ProfilerExtension.getTestTiming(context, getTestMethodName());
         long profilerResult = (long) timing.getDuration();
-        assertTimeout(profilerResult);
+        assertThatMeasureInRange(profilerResult, getTimeout(), getExpectedThreshold());
 
+        // compare with time measured by this extension:
         long doubleCheckResult = evaluateTimeout();
-        assertTimeout(doubleCheckResult);
+        assertThatMeasureInRange(profilerResult, doubleCheckResult, getExpectedThreshold());
     }
 
     private long evaluateTimeout() {
         return getCurrentTime() - before;
     }
 
-    private void assertTimeout(long duration) {
-        long delta = Math.abs(duration - getTimeout());
-        System.out.println(String.format("result = %d ms, delta = %d", duration, delta));
-        assertThat(delta).isLessThanOrEqualTo(getExpectedThreshold());
+    private void assertThatMeasureInRange(long firstMeasure, long secondMeasure, long threshold) {
+        long delta = Math.abs(firstMeasure - secondMeasure);
+        System.out.println(String.format("firstMeasure = %d, secondMeasure = %d, delta = %d, threshold =%d",
+                                         firstMeasure, secondMeasure, delta, threshold));
+        assertThat(delta).isLessThanOrEqualTo(threshold);
     }
 
     abstract long getExpectedThreshold();
+
     abstract long getTimeout();
+
     abstract String getTestMethodName();
+
     abstract long getCurrentTime();
 }
