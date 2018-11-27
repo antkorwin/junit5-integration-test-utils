@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit;
 class BenchmarkExtensionMeasureUnitTest {
 
     @Fast
-    @TestBenchmark(measurementIterations = 5, warmupIterations = 2)
+    @TestBenchmark(measurementIterations = 15, warmupIterations = 10)
     void testFast() {
     }
 
-    @TestBenchmark(measurementIterations = 5, warmupIterations = 2)
+    @TestBenchmark(measurementIterations = 15, warmupIterations = 10)
     void testSlow() throws InterruptedException {
         Thread.sleep(1);
     }

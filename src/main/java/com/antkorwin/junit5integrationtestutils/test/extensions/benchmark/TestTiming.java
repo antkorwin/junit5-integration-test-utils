@@ -6,6 +6,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 19.08.2018.
@@ -21,9 +22,11 @@ public class TestTiming {
     private long startTime;
     private double duration;
     private double average;
+    private TimeUnit timeUnit;
     private List<Long> results = new ArrayList<>();
 
-    public TestTiming(long startTime) {
+    public TestTiming(long startTime, TimeUnit timeUnit) {
         this.startTime = startTime;
+        this.timeUnit = timeUnit;
     }
 }

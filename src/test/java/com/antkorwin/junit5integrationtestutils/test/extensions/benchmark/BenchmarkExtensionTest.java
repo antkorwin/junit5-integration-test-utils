@@ -10,12 +10,12 @@ package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 class BenchmarkExtensionTest {
 
     @Fast
-    @TestBenchmark(measurementIterations = 5, warmupIterations = 2)
+    @TestBenchmark(measurementIterations = 15, warmupIterations = 10)
     void testFast() throws InterruptedException {
         Thread.sleep(30);
     }
 
-    @TestBenchmark(measurementIterations = 5, warmupIterations = 2)
+    @TestBenchmark(measurementIterations = 15, warmupIterations = 10)
     void testSlow() throws InterruptedException {
         Thread.sleep(100);
     }

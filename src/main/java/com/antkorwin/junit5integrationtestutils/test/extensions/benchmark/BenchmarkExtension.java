@@ -50,8 +50,9 @@ public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
             if (timing.getDuration() < expectedResult) {
                 String fastestName = getExpectedFasterMethodName(context);
                 Assertions.fail("\n\nThe test method \"" + fastestName + "\" - is not fastest in this test suite.\n" +
-                                "Timing of the method \"" + method + "\" (" + timing.getDuration() + " ms.) " +
-                                " less than timing (" + expectedResult + " ms.) of the expected method \"" + fastestName + "\".\n");
+                                "Timing of the method \"" + method + "\" (" + timing.getDuration() +" "+ timing.getTimeUnit().name() +")" +
+                                " less than timing (" + expectedResult + " "+ timing.getTimeUnit().name()+") of the expected method \""
+                                + fastestName + "\".\n");
             }
         });
     }
@@ -82,9 +83,16 @@ public class BenchmarkExtension implements BeforeAllCallback, AfterAllCallback {
     }
 
     private void printAverage(String method, TestTiming timing) {
-        log.info("The average time of [{}] = {} ms.", method, timing.getAverage());
+
+        log.info("The average time of [{}] = {} {}.",
+                 method,
+                 timing.getAverage(),
+                 timing.getTimeUnit().name());
+
         if (timing.getAverage() < 1) {
-            log.warn("The average time of [{}] is less than one millisecond, your benchmark may be incorrect.", method);
+            log.warn("The average time of [{}] is less than one {}, your benchmark may be incorrect.",
+                     method,
+                     timing.getTimeUnit().name());
         }
     }
 

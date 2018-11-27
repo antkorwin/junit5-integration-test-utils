@@ -80,12 +80,7 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     }
 
     private static long convertTime(TimeUnit unit, double duration) {
-        if (unit == TimeUnit.NANOSECONDS) {
-            return unit.convert((long) duration, TimeUnit.NANOSECONDS);
-        }
-        else {
-            return unit.convert((long) duration, TimeUnit.MILLISECONDS);
-        }
+        return unit.convert((long) duration, unit);
     }
 
     @Override
@@ -94,7 +89,7 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
         Map<String, TestTiming> map = getOrCreateProfilerResults(context);
 
         String testMethodName = context.getRequiredTestMethod().getName();
-        map.put(testMethodName, new TestTiming(getCurrentTime(context)));
+        map.put(testMethodName, new TestTiming(getCurrentTime(context), evaluateMeasureUnit(context)));
     }
 
     @Override
@@ -133,11 +128,12 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     }
 
     private long getCurrentTime(ExtensionContext context) {
+
         switch (evaluateMeasureUnit(context)) {
             case NANOSECONDS:
                 return System.nanoTime();
             default:
-                return System.currentTimeMillis();
+                return evaluateMeasureUnit(context).convert(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
         }
     }
 
