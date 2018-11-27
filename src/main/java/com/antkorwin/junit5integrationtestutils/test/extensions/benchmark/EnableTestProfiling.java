@@ -1,11 +1,11 @@
 package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Created on 17.08.2018.

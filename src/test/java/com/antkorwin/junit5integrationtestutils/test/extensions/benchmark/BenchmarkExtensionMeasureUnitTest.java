@@ -1,22 +1,24 @@
 package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created on 17.08.2018.
  *
  * @author Korovin Anatoliy
  */
 @EnableTestBenchmark
-class BenchmarkExtensionTest {
+@MeasureUnit(unit = TimeUnit.NANOSECONDS)
+class BenchmarkExtensionMeasureUnitTest {
 
     @Fast
     @TestBenchmark(measurementIterations = 15, warmupIterations = 10)
-    void testFast() throws InterruptedException {
-        Thread.sleep(30);
+    void testFast() {
     }
 
     @TestBenchmark(measurementIterations = 15, warmupIterations = 10)
     void testSlow() throws InterruptedException {
-        Thread.sleep(100);
+        Thread.sleep(1);
     }
 }
