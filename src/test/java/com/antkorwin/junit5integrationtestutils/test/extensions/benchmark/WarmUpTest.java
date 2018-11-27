@@ -2,6 +2,8 @@ package com.antkorwin.junit5integrationtestutils.test.extensions.benchmark;
 
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.Assertions;
+
 /**
  * Created on 19.08.2018.
  *
@@ -11,24 +13,29 @@ import java.util.stream.IntStream;
 class WarmUpTest {
 
     @Fast
-    @TestBenchmark(warmupIterations = 3, measurementIterations = 10)
-    void name() throws InterruptedException {
-        // Arrange
+    @TestBenchmark(warmupIterations = 10, measurementIterations = 20)
+    void fastStream() {
         // Act
-        IntStream.range(0, 100)
-                 .boxed()
-                 .forEach(System.out::print);
+        int sum = IntStream.range(0, 100_000)
+                           .boxed()
+                           .mapToInt(i -> i)
+                           .sum();
         // Asserts
+        Assertions.assertEquals(sum, 704982704);
     }
 
-
-    @TestBenchmark(warmupIterations = 3, measurementIterations = 10)
-    void nameSlow() throws InterruptedException {
-        // Arrange
+    @TestBenchmark(warmupIterations = 10, measurementIterations = 20)
+    void slowStream() {
         // Act
-        IntStream.range(0, 1000)
-                 .boxed()
-                 .forEach(System.out::print);
+        int sum = IntStream.range(0, 100_000)
+                           .boxed()
+                           .map(i -> i * 3)
+                           .map(i -> i / 3)
+                           .map(i -> i * 2)
+                           .map(i -> i / 2)
+                           .mapToInt(i -> i)
+                           .sum();
         // Asserts
+        Assertions.assertEquals(sum, 704982704);
     }
 }
