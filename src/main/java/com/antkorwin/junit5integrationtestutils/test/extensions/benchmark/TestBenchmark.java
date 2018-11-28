@@ -25,6 +25,8 @@ public @interface TestBenchmark {
     /**
      * count of measurement iterations,
      * a fastest method will be select by the average of these times.
+     *
+     * @return
      */
     int measurementIterations();
 

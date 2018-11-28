@@ -76,6 +76,7 @@ public class MvcRequestPointed {
      * С OAuth аутентификацией.
      *
      * @param token OAuth-токен.
+     * @return MvcRequestPointed
      */
     public MvcRequestPointed withOAuth(String token) {
         postProcessors.add(OAuthRequestPostProcessor.getInstance(token));
@@ -87,6 +88,7 @@ public class MvcRequestPointed {
      *
      * @param username имя пользователя.
      * @param password пароль пользователя.
+     * @return MvcRequestPointed
      */
     public MvcRequestPointed withBasicAuth(String username, String password) {
         postProcessors.add(httpBasic(username, password));
@@ -117,7 +119,7 @@ public class MvcRequestPointed {
      * @param fieldName поле формы в котором будет передан файл
      * @param fileData  массив байт для отправки
      *
-     * @return
+     * @return MvcRequestPointed
      */
     public MvcRequestPointed withFile(String fieldName,
                                       String originalFileName,
@@ -145,7 +147,7 @@ public class MvcRequestPointed {
      *
      * @param token токен авторизации
      *
-     * @return
+     * @return MvcRequestResult
      * @throws Exception
      */
     public MvcRequestResult uploadWithAuth(String token) throws Exception {
@@ -157,6 +159,7 @@ public class MvcRequestPointed {
      * Выполнить пост запрос, с отправкой объекта в виде JSON
      *
      * @param content отправляемый объект
+     * @return MvcRequestResult
      */
     public MvcRequestResult post(Object content) throws Exception {
         return new MvcRequestResult(
@@ -170,6 +173,7 @@ public class MvcRequestPointed {
      * Выполнить PUT запрос, с отправкой объекта в виде JSON
      *
      * @param content отправляемый объект
+     * @return MvcRequestResult
      */
     public MvcRequestResult put(Object content) throws Exception {
         return new MvcRequestResult(
@@ -181,6 +185,7 @@ public class MvcRequestPointed {
 
     /**
      * Выполнить DELETE запрос, с отправкой объекта в виде JSON
+     * @return MvcRequestResult
      */
     public MvcRequestResult delete() throws Exception {
         return new MvcRequestResult(
@@ -194,6 +199,7 @@ public class MvcRequestPointed {
      *
      * @param content   Объект отправляемый в виде json
      * @param authToken токен авторизации
+     * @return MvcRequestResult
      *
      * @deprecated вместо этого нужно использовать метод .withOAuth(token:String?) и .post(Content:Object?)
      */

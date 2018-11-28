@@ -34,6 +34,9 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     /**
      * return a result of profiling
      * for a current test class in the context
+     *
+     * @param context test execution context
+     * @return map where key is a test method name and value is a test timing result for this method
      */
     public static Map<String, TestTiming> getProfilerResult(ExtensionContext context) {
         return getProfilerResult(context, context.getRequiredTestClass().getName());
@@ -42,6 +45,10 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     /**
      * return a result of profiling
      * for the testClassName
+     *
+     * @param context test execution context
+     * @param testClassName name of the class which results of profiling will return
+     * @return map where key is a test method name and value is a test timing result for this method
      */
     public static Map<String, TestTiming> getProfilerResult(ExtensionContext context, String testClassName) {
         ExtensionContext.Store store = context.getRoot().getStore(NAMESPACE);
@@ -51,6 +58,10 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
     /**
      * return a timing of the profiling result (by method name)
      * for current test class in the context.
+     *
+     * @param context test execution context
+     * @param testMethodName name og the test method
+     * @return test timing result for this method
      */
     public static TestTiming getTestTiming(ExtensionContext context, String testMethodName) {
         return getProfilerResult(context).get(testMethodName);
@@ -60,6 +71,11 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
      * return a timing of the profiling result
      * by test class name
      * and test method name from this class.
+     *
+     * @param context test execution context
+     * @param testClassName name of the class which results of profiling will return
+     * @param testMethodName name og the test method
+     * @return test timing result for this method
      */
     public static TestTiming getTestTiming(ExtensionContext context, String testClassName, String testMethodName) {
         return getProfilerResult(context, testClassName).get(testMethodName);
@@ -67,6 +83,9 @@ public class ProfilerExtension implements AfterAllCallback, BeforeEachCallback, 
 
     /**
      * print profiling results in the console
+     *
+     * @param results map with test timing results
+     * @param measureUnit measure unit
      */
     public static void printProfilerResult(Map<String, TestTiming> results, TimeUnit measureUnit) {
         System.out.println("\nResult of profiling: ");

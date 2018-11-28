@@ -49,7 +49,7 @@ public class MvcRequester {
      *
      * @param mockMvc      mockMvc через который выполняем запросы
      * @param objectMapper мапер которым кодируем тело запроса
-     * @return
+     * @return MvcRequester
      */
     public static MvcRequester on(MockMvc mockMvc,
                                   ObjectMapper objectMapper) {
@@ -65,7 +65,7 @@ public class MvcRequester {
      * @param mockMvc           mockMvc через который выполняем запросы
      * @param sendJsonMapper    мапер которым кодируем тело запроса перед отправкой
      * @param receiveJsonMapper мапер которым будет декодироватся приходящий в ответе json
-     * @return
+     * @return MvcRequester
      */
     public static MvcRequester on(MockMvc mockMvc,
                                   ObjectMapper sendJsonMapper,
