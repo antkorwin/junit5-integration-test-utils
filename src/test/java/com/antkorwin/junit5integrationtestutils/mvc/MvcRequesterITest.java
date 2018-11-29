@@ -8,9 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -107,6 +110,27 @@ public class MvcRequesterITest {
                     .expectStatus(HttpStatus.CREATED);
     }
 
+    @Test
+    public void testSendHeaders() throws Exception {
+
+        String result = MvcRequester.on(mockMvc)
+                                    .to("test/headers/check")
+                                    .withHeader("custom-header", "12345")
+                                    .get()
+                                    .returnAsPrimitive(String.class);
+
+        assertThat(result).isEqualTo("secret");
+    }
+
+    @Test
+    public void testGetHeaders() throws Exception {
+
+        MvcRequester.on(mockMvc)
+                    .to("test/headers/get")
+                    .get()
+                    .expectHeader("response-header", "12345");
+    };
+
     @TestConfiguration
     public static class TestConfig {
 
@@ -134,6 +158,21 @@ public class MvcRequesterITest {
             @ResponseStatus(HttpStatus.CREATED)
             public void create() {
 
+            }
+
+            @GetMapping("/headers/check")
+            public String checkHeader(HttpServletRequest request) {
+                String header = request.getHeader("custom-header");
+                return (header != null && header.equals("12345"))
+                       ? "secret"
+                       : "fail";
+            }
+
+            @GetMapping("/headers/get")
+            public ResponseEntity<Void> returnHeader() {
+                return ResponseEntity.status(200)
+                                     .header("response-header", "12345")
+                                     .build();
             }
         }
     }

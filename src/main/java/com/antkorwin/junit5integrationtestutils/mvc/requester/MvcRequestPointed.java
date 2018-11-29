@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 /**
  * Created on 03.08.2018.
- *
+ * <p>
  * Билдер для запросов к MVC контроллерам с предопределенным URL и MockMvc через который буду выполнятся запросы
  *
  * @author Sergey Vdovin
@@ -76,6 +76,7 @@ public class MvcRequestPointed {
      * С OAuth аутентификацией.
      *
      * @param token OAuth-токен.
+     *
      * @return MvcRequestPointed
      */
     public MvcRequestPointed withOAuth(String token) {
@@ -88,6 +89,7 @@ public class MvcRequestPointed {
      *
      * @param username имя пользователя.
      * @param password пароль пользователя.
+     *
      * @return MvcRequestPointed
      */
     public MvcRequestPointed withBasicAuth(String username, String password) {
@@ -159,6 +161,7 @@ public class MvcRequestPointed {
      * Выполнить пост запрос, с отправкой объекта в виде JSON
      *
      * @param content отправляемый объект
+     *
      * @return MvcRequestResult
      */
     public MvcRequestResult post(Object content) throws Exception {
@@ -173,6 +176,7 @@ public class MvcRequestPointed {
      * Выполнить PUT запрос, с отправкой объекта в виде JSON
      *
      * @param content отправляемый объект
+     *
      * @return MvcRequestResult
      */
     public MvcRequestResult put(Object content) throws Exception {
@@ -185,6 +189,7 @@ public class MvcRequestPointed {
 
     /**
      * Выполнить DELETE запрос, с отправкой объекта в виде JSON
+     *
      * @return MvcRequestResult
      */
     public MvcRequestResult delete() throws Exception {
@@ -199,8 +204,8 @@ public class MvcRequestPointed {
      *
      * @param content   Объект отправляемый в виде json
      * @param authToken токен авторизации
-     * @return MvcRequestResult
      *
+     * @return MvcRequestResult
      * @deprecated вместо этого нужно использовать метод .withOAuth(token:String?) и .post(Content:Object?)
      */
     @Deprecated
@@ -260,16 +265,7 @@ public class MvcRequestPointed {
     private MockHttpServletRequestBuilder make(Function<URI, MockHttpServletRequestBuilder> builderSupplier) {
 
         MockHttpServletRequestBuilder builder = builderSupplier.apply(uri);
-        if (!params.isEmpty()) {
-            params.asMap()
-                  .forEach((key, values) ->
-                                   values.forEach(value ->
-                                                          builder.param(key, value)));
-        }
-        if (!postProcessors.isEmpty()) {
-            postProcessors.forEach(builder::with);
-        }
-        return builder;
+        return prepareRequest(builder);
     }
 
     private MockHttpServletRequestBuilder makePostWithAuth(String authToken) {
@@ -283,9 +279,9 @@ public class MvcRequestPointed {
     }
 
     /**
-     * проставляем параметры и заголовки в запрос
+     * set request parameters, headers and postProcessors
      *
-     * @param builder запрос
+     * @param builder request
      */
     private MockHttpServletRequestBuilder prepareRequest(MockHttpServletRequestBuilder builder) {
         if (!params.isEmpty()) {
@@ -299,6 +295,9 @@ public class MvcRequestPointed {
                     (key, values) ->
                             values.forEach(value ->
                                                    builder.header(key, value)));
+        }
+        if (!postProcessors.isEmpty()) {
+            postProcessors.forEach(builder::with);
         }
         return builder;
     }

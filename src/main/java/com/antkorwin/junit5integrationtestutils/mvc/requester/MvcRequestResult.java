@@ -9,11 +9,12 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created on 03.08.2018.
- *
+ * <p>
  * Билдер для обработки результата запроса к Mvc контроллеру
  *
  * @author Sergey Vdovin
@@ -48,6 +49,21 @@ public class MvcRequestResult {
     public MvcRequestResult expectStatus(HttpStatus status) throws Exception {
         resultActions.andDo(print());
         resultActions.andExpect(status().is(status.value()));
+        return this;
+    }
+
+    /**
+     * check the header value in the response
+     *
+     * @param name  header name
+     * @param value expected value of this header
+     *
+     * @return MvcRequestResult
+     * @throws Exception
+     */
+    public MvcRequestResult expectHeader(String name, String value) throws Exception {
+        resultActions.andDo(print());
+        resultActions.andExpect(header().string(name, value));
         return this;
     }
 
