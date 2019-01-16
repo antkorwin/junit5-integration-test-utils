@@ -20,9 +20,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Tag("rabbitmq-test")
+@Tag("activemq-test")
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ExtendWith(ActiveMqTcExtension.class)
-public @interface ActiveMqTests {
+public @interface EnableActiveMqTests {
 }
