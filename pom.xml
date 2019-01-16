@@ -337,7 +337,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <groups>!pg&amp;!mysql&amp;!rabbitmq-test</groups>
+                            <groups>!pg&amp;!mysql&amp;!rabbitmq-test&amp;!activemq-test</groups>
                         </configuration>
                     </execution>
                     <execution>
@@ -370,6 +370,17 @@
                         </goals>
                         <configuration>
                             <groups>rabbitmq-test</groups>
+                            <!--<excludedGroups>pg, h2</excludedGroups>-->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>activemq-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>activemq-test</groups>
                             <!--<excludedGroups>pg, h2</excludedGroups>-->
                         </configuration>
                     </execution>
