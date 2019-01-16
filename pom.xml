@@ -5,7 +5,7 @@
 
     <groupId>com.antkorwin</groupId>
     <artifactId>junit5-integration-test-utils</artifactId>
-    <version>1.0</version>
+    <version>0.48-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>junit5-integration-test-utils</name>
